@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	int batCur = 0;
 	int batPre = 0;
 	int batAvg = 0;
-	int countIntervals = 0;
+	int countIter = 0;
 	FILE *fdout;
 
 	if (argc == 3 && argv[1][1] == 'w') {
@@ -29,20 +29,23 @@ int main(int argc, char *argv[])
 	while (1) {
 		batCur = getValue(BAT_CUR);
 
-		if (countIntervals == 0) {
+		// On the first iteration, or after a
+		// battery change, set batPre to the
+		// current value
+		if (countIter == 0) {
 			batPre = batCur;
 		}
 		// Calculate average increase/decrease
 		// of battery when defined iterations
 		// are done
-		else if (countIntervals % POLL_ITR == 0) {
+		else if (countIter % POLL_ITR == 0) {
 			batAvg = (batPre - batCur) / POLL_AVG;
 			batPre = batCur;
 		}
 		// If batState changed between discharging and charging
 		// reset average counters
 		if (batState != getValue(AC_CHRG)) {
-			countIntervals = 0;
+			countIter = 0;
 			batAvg = 0;
 		}
 
@@ -62,7 +65,7 @@ int main(int argc, char *argv[])
 		}
 
 		sleep(POLL_INT);
-		countIntervals++;
+		countIter++;
 	}
 
 	fclose(fdout);
