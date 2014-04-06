@@ -7,4 +7,4 @@
 #define AC_CHRG "/sys/class/power_supply/AC/online"
 
 int getValue(const char *filename);
-void printOutput(int batCur, int batMax, int batAvg, int batState);
+void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState);
