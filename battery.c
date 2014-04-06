@@ -6,37 +6,50 @@
 
 int main()
 {
+	const int batMax = getValue(BAT_MAX);
+	int batState = getValue(AC_CHRG);
 	int batCur = 0;
 	int batPre = 0;
-	int batMax = 0;
-	int batDecAvg = 0;
+	int batAvg = 0;
 	int countIntervals = 0;
 
-	batMax = getValue(BAT_MAX);
-
 	while (1) {
-		countIntervals++;
-		batPre = batCur;
 		batCur = getValue(BAT_CUR);
 
-		if (batPre > 0) {
-			batDecAvg = (batPre - batCur) / countIntervals;
+		if (countIntervals++ == 0) {
+			batPre = batCur;
+		}
+		else if (countIntervals % POLL_ITR == 0) {
+			batAvg = (batPre - batCur) / POLL_AVG;
+			batPre = batCur;
+		}
+		// If batState changed between discharging and charging
+		// reset average counters
+		if (batState != getValue(AC_CHRG)) {
+			countIntervals = 0;
+			batAvg = 0;
 		}
 
-		if (getValue(AC_CHRG)) {
+		batState = getValue(AC_CHRG);
+		if (batState) {
 			printf("Charging: ");
-			printf("%d average increase per %d sec\n", -batDecAvg, INTERVAL);
-			printf("That means: %.f * min left\n\n",
-				(float)(batMax - batCur) / (batDecAvg * (60 / INTERVAL)), INTERVAL);
+			printf("%.f%\n", (float)batCur/batMax*100);
+			if (batAvg) {
+				printf("%.f%, ", (float)batCur/batMax*100);
+				printf("estimated %.fmin left before fully charged\n",
+					(float)(batMax - batCur) / batAvg / 60);
+			}
 		}
 		else {
 			printf("Discharging: ");
-			printf("%d average decrease per %d sec\n", batDecAvg, INTERVAL);
-			printf("That means: %.f * min left\n\n",
-				(float)batCur / (batDecAvg * (60 / INTERVAL)), INTERVAL);
+			printf("%.f%\n", (float)batCur/batMax*100);
+			if (batAvg) {
+				printf("%.f%, ", (float)batCur/batMax*100);
+				printf("estimated %.fmin left\n", (float)batCur / batAvg / 60);
+			}
 		}
 
-		sleep(INTERVAL);
+		sleep(POLL_INT);
 	}
 
 	return 0;
@@ -60,9 +73,4 @@ int getValue(const char *filename) {
 	}
 
 	return atoi(line);
-}
-
-float remainingTime(int avg, int remaining)
-{
-	return (float)remaining / avg;
 }
