@@ -55,7 +55,10 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 			rewind(fdout);
-			fflush(fdout);
+			if (fflush(fdout) != 0) {
+				perror("Couldn't flush buffer to file: ");
+				exit(1);
+			}
 		}
 
 		sleep(POLL_INT);
