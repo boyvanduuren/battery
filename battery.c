@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 				fclose(fdout);
 				exit(1);
 			}
+			rewind(fdout);
 			fflush(fdout);
 		}
 
