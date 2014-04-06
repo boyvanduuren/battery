@@ -90,6 +90,7 @@ void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState)
 {
 	if (batState) {
 		if (batAvg) {
+			fprintf(stream, "Charging: ");
 			fprintf(stream, "%.f%, ", (float)batCur/batMax*100);
 			fprintf(stream, "estimated %.fmin left before fully charged\n",
 				(float)(batMax - batCur) / -batAvg / 60);
@@ -101,6 +102,7 @@ void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState)
 	}
 	else {
 		if (batAvg) {
+			fprintf(stream, "Discharging: ");
 			fprintf(stream, "%.f%, ", (float)batCur/batMax*100);
 			fprintf(stream, "estimated %.fmin left\n", (float)batCur / batAvg / 60);
 		}
