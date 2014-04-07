@@ -6,6 +6,7 @@
 
 int main(int argc, char *argv[])
 {
+	// TODO: better way of storing battery values
 	const int batMax = getValue(BAT_MAX);
 	int batState = getValue(AC_CHRG);
 	int batCur = 0;
@@ -14,7 +15,9 @@ int main(int argc, char *argv[])
 	int countIter = 0;
 	FILE *fdout;
 
+	// TODO: Improve option handling!
 	if (argc == 3 && argv[1][1] == 'w') {
+		// If -w file is given, open file
 		fdout = fopen(argv[2], "w");
 		if (fdout == NULL) {
 			fprintf(stderr, "Error opening %s: ", argv[2]);
@@ -23,6 +26,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	else {
+		// else, just write to stdout
 		fdout = stdout;
 	}
 
@@ -51,6 +55,9 @@ int main(int argc, char *argv[])
 
 		batState = getValue(AC_CHRG);
 		printOutput(fdout, batCur, batMax, batAvg, batState);
+		// Because I don't want to close and reopen the
+		// filedescriptor to truncate the file, use ftruncate
+		// and then flush the buffer to the file
 		if (fdout != stdout) {
 			if (ftruncate(fileno(fdout), 0) == -1) {
 				fputs("Error truncating file", stderr);
@@ -72,6 +79,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+// Read file content
 int getValue(const char *filename) {
 	int fd;
 	char line[MAX_LINE];
@@ -93,6 +101,8 @@ int getValue(const char *filename) {
 	return atoi(line);
 }
 
+// Write output to filedescriptor
+// TODO: make output string user formattable
 void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState)
 {
 	if (batState) {
