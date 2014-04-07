@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		if (fdout == NULL) {
 			fprintf(stderr, "Error opening %s: ", argv[2]);
 			perror("");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else {
@@ -62,12 +62,12 @@ int main(int argc, char *argv[])
 			if (ftruncate(fileno(fdout), 0) == -1) {
 				fputs("Error truncating file", stderr);
 				fclose(fdout);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			rewind(fdout);
 			if (fflush(fdout) != 0) {
 				perror("Couldn't flush buffer to file: ");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 		}
 
@@ -88,13 +88,13 @@ int getValue(const char *filename) {
 	fd = open(filename, O_RDONLY);
 	if (fd == -1) {
 		fputs("Error opening file", stderr);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	n = read(fd, line, MAX_LINE);
 	if (n == -1) {
 		fputs("Error reading file", stderr);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	close(fd);
