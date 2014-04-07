@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <signal.h>
 #include "battery.h"
 
 int main(int argc, char *argv[])
@@ -14,7 +15,9 @@ int main(int argc, char *argv[])
 	bat.avg = 0;
 
 	int countIter = 0;
-	FILE *fdout;
+
+	// Handle SIGINT, so we can gracefully exit
+	signal(SIGINT, handleSignal);
 
 	// TODO: Improve option handling!
 	if (argc == 3 && argv[1][1] == 'w') {
@@ -75,9 +78,6 @@ int main(int argc, char *argv[])
 		sleep(POLL_INT);
 		countIter++;
 	}
-
-	fclose(fdout);
-	return 0;
 }
 
 // Read file content
@@ -129,4 +129,9 @@ void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState)
 			fprintf(stream, "%.f%%\n", (float)batCur/batMax*100);
 		}
 	}
+}
+
+void handleSignal() {
+	fclose(fdout);
+	exit(EXIT_SUCCESS);
 }

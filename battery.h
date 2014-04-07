@@ -14,5 +14,8 @@ typedef struct batteries {
 	int avg;
 } battery;
 
+FILE *fdout;
+
 int getValue(const char *filename);
 void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState);
+void handleSignal();
