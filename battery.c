@@ -6,12 +6,13 @@
 
 int main(int argc, char *argv[])
 {
-	// TODO: better way of storing battery values
-	const int batMax = getValue(BAT_MAX);
-	int batState = getValue(AC_CHRG);
-	int batCur = 0;
-	int batPre = 0;
-	int batAvg = 0;
+	battery bat;
+	bat.max = getValue(BAT_MAX);
+	bat.state = getValue(AC_CHRG);
+	bat.cur = 0;
+	bat.pre = 0;
+	bat.avg = 0;
+
 	int countIter = 0;
 	FILE *fdout;
 
@@ -31,30 +32,30 @@ int main(int argc, char *argv[])
 	}
 
 	while (1) {
-		batCur = getValue(BAT_CUR);
+		bat.cur = getValue(BAT_CUR);
 
 		// On the first iteration, or after a
-		// battery change, set batPre to the
+		// battery change, set bat.pre to the
 		// current value
 		if (countIter == 0) {
-			batPre = batCur;
+			bat.pre = bat.cur;
 		}
 		// Calculate average increase/decrease
 		// of battery when defined iterations
 		// are done
 		else if (countIter % POLL_ITR == 0) {
-			batAvg = (batPre - batCur) / POLL_AVG;
-			batPre = batCur;
+			bat.avg = (bat.pre - bat.cur) / POLL_AVG;
+			bat.pre = bat.cur;
 		}
-		// If batState changed between discharging and charging
+		// If bat.state changed between discharging and charging
 		// reset average counters
-		if (batState != getValue(AC_CHRG)) {
+		if (bat.state != getValue(AC_CHRG)) {
 			countIter = 0;
-			batAvg = 0;
+			bat.avg = 0;
 		}
 
-		batState = getValue(AC_CHRG);
-		printOutput(fdout, batCur, batMax, batAvg, batState);
+		bat.state = getValue(AC_CHRG);
+		printOutput(fdout, bat.cur, bat.max, bat.avg, bat.state);
 		// Because I don't want to close and reopen the
 		// filedescriptor to truncate the file, use ftruncate
 		// and then flush the buffer to the file

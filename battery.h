@@ -6,5 +6,13 @@
 #define BAT_MAX "/sys/class/power_supply/BAT0/charge_full_design"
 #define AC_CHRG "/sys/class/power_supply/AC/online"
 
+typedef struct batteries {
+	int max;
+	int state;
+	int cur;
+	int pre;
+	int avg;
+} battery;
+
 int getValue(const char *filename);
 void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState);
