@@ -4,6 +4,8 @@
 #include "output.h"
 
 // I might not even need this, but I'm leaving it just in case
+// this function looks for variables, so they can be replaced
+// It's not done.
 void findVariables(char *input)
 {
 	char *needle = strchr(input, CHAR_VAR);
