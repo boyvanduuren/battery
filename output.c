@@ -3,42 +3,23 @@
 #include <stdio.h>
 #include "output.h"
 
-// I might not even need this, but I'm leaving it just in case
-// this function looks for variables, so they can be replaced
-// It's not done.
-void findVariables(char *input)
+// TODO: Think of valid names and enforce
+// sets of chars like $$ are now counted
+// as two counts
+int findVariables(char *input)
 {
 	char *needle = strchr(input, CHAR_VAR);
-	char *varname = malloc(sizeof(char) * BUF_SIZE);
-	int i;
+	int counter = 0;
 
-	if (needle != NULL) {
+	while (needle != NULL) {
 		needle--;
-		if (needle[0] == CHAR_ESC) {
-			printf("%c is escaped, we won't do anything\n", CHAR_VAR);
-		}
-		else {
+		if (*needle != CHAR_ESC) {
 			needle = needle + 2;
-			char *step = strchr(needle, ' ');
-			strncpy(varname, needle, step - needle);
-
-			if (!strcmp(varname, "AVG")) {
-				printf("replace with average\n");
-				needle--;
-				needle[0] = '\0';
-				step[0] = '\0';
-				step++;
-				printf("%s(average)%s", input, step);
-			}
-			else {
-				printf("couldn't find anything to replace %s with\n",
-					varname);
-			}
+			counter++;
 		}
+		needle = strchr(needle, CHAR_VAR);
 	}
-	else {
-		printf("%s\n", input);
-	}
+	return counter;
 }
 
 char *replaceSubString(const char *input, const char *oldval, const char *newval)

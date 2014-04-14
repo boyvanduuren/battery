@@ -2,5 +2,5 @@
 #define CHAR_ESC '\\'
 #define CHAR_VAR '$'
 
-void findVariables(char *input);
+int findVariables(char *input);
 char *replaceSubString(const char *input, const char *oldval, const char *newval);
