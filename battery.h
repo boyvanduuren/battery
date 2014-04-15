@@ -1,3 +1,6 @@
+#ifndef BATTERY_H
+#define BATTERY_H
+
 #define MAX_LINE 100
 #define POLL_INT 5
 #define POLL_AVG 20
@@ -19,3 +22,5 @@ FILE *fdout;
 int getValue(const char *filename);
 void printOutput(FILE *stream, int batCur, int batMax, int batAvg, int batState);
 void handleSignal();
+
+#endif
