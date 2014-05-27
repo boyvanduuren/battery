@@ -39,7 +39,7 @@ char *formatOutput(char *fmt, battery *bat)
 {
 	char *output = strdup(fmt);
 
-	if (fmt != NULL) {
+	if (output != NULL) {
 		replaceSubString(&output, "$MAX", "REPL_MAX");
 //		output = replaceSubString(output,
 //			"$MAX", "REPL_MAX");
