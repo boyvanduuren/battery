@@ -1,11 +1,12 @@
 CC=gcc
 LIBS=-lm
+SRC=./src/
 OUT=./bin/
 
-battery: main.c main.h battery.c battery.h output.c output.h
-	mkdir $(OUT)
-	$(CC) -o $(OUT)battery main.c battery.c output.c $(LIBS)
+battery: $(SRC)main.c $(SRC)main.h $(SRC)battery.c $(SRC)battery.h $(SRC)output.c $(SRC)output.h
+	test -d $(OUT) || mkdir $(OUT)
+	$(CC) -o $(OUT)battery $(SRC)main.c $(SRC)battery.c $(SRC)output.c $(LIBS)
 
-debug: main.c main.h battery.c battery.h output.c output.h
-	mkdir $(OUT)
-	$(CC) -g -o $(OUT)battery main.c battery.c output.c $(LIBS)
+debug: $(SRC)main.c $(SRC)main.h $(SRC)battery.c $(SRC)battery.h $(SRC)output.c $(SRC)output.h
+	test -d $(OUT) || mkdir $(OUT)
+	$(CC) -g -Wall -o $(OUT)battery $(SRC)main.c $(SRC)battery.c $(SRC)output.c $(LIBS)
