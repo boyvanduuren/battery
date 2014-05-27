@@ -36,28 +36,20 @@ void replaceSubString(char **input, const char *oldval, const char *newval)
 	free(result);
 }
 
-char *formatOutput(char *fmt, battery *bat)
-{
-	char *output = strdup(fmt);
-
-	if (output != NULL) {
-		replaceSubString(&output, "$MAX", "REPL_MAX");
-//		output = replaceSubString(output,
-//			"$MAX", "REPL_MAX");
-//		output = replaceSubString(output,
-//			"$STATE", "REPL_STATE");
-//		output = replaceSubString(output,
-//			"$PERCENTAGE", "REPL_PERC");
-//		output = replaceSubString(output,
-//			"$TIME_MIN", "REPL_TIMEMIN");
-	}
-
-	return output;
-}
-
 void printOutput(FILE *stream, battery *bat)
 {
-	char *output = formatOutput("$STATE: $MAX $PERCENTAGE, $TIME_MIN minutes left\n", bat);
+	// Set up initial string
+	char *output = malloc(sizeof(char) * BUF_SIZE);
+	snprintf(output, BUF_SIZE,
+		"$STATE: $MAX $PERCENTAGE, $TIME_MIN minutes left\n");
+
+	// Replace variable stuff
+	replaceSubString(&output, "$MAX", "REPL_MAX");
+	replaceSubString(&output, "$STATE", "REPL_STATE");
+	replaceSubString(&output, "$PERCENTAGE", "REPL_PERCENTAGE");
+	replaceSubString(&output, "$TIME_MIN", "REPL_TIME_MIN");
+
+	// Write to stream
 	fprintf(stream, output);
 	free(output);
 
