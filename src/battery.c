@@ -20,6 +20,7 @@ char *intToString(int val)
 
 	if (out != NULL) {
 		snprintf(out, valLength + 1, "%d", val);
-		return out;
 	}
+
+	return out;
 }
