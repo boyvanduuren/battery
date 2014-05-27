@@ -22,7 +22,7 @@ void replaceSubString(char **input, const char *oldval, const char *newval)
 		while (needle != NULL) {
 			*needle = '\0';
 			*(needle + oldlen - 1) = '\0';
-			needle = needle + oldlen; // PROBLEMATIC!!!
+			needle = needle + oldlen;
 
 			char *temp = strdup(needle);
 			strncat(result, newval, BUF_SIZE);
