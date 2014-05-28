@@ -1,26 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <string.h>
 #include "battery.h"
 
-char *intToString(int val)
+int getBatteryStatus(battery *bat, const char *field)
 {
-	int valLength;
-	char *out;
-
-	if (val != 0) {
-		// Length of int as string
-		valLength = floor(log10(abs(val))) + 1;
+	if (strcmp("state", field) == 0) {
+		return bat->state;
 	}
-	else {
-		valLength = 1;
+	else if (strcmp("max", field) == 0) {
+		return bat->max;
 	}
-
-	out = malloc(sizeof(char) * valLength);
-
-	if (out != NULL) {
-		snprintf(out, valLength + 1, "%d", val);
+	else if (strcmp("current", field) == 0) {
+		return bat->cur;
 	}
-
-	return out;
+	else if (strcmp("previous", field) == 0) {
+		return bat->pre;
+	}
+	else if (strcmp("average", field) == 0) {
+		return bat->avg;
+	}
+	else if (strcmp("percentage", field) == 0) {
+		float percentage = (float)bat->cur/bat->max*100;
+		return (int)(percentage + 0.5);
+	}
+	return -1;
 }

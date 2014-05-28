@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 #include "battery.h"
 #include "output.h"
 #include "main.h"
@@ -41,13 +42,21 @@ void printOutput(FILE *stream, battery *bat)
 	// Set up initial string
 	char *output = malloc(sizeof(char) * BUF_SIZE);
 	snprintf(output, BUF_SIZE,
-		"$STATE: $MAX $PERCENTAGE, $TIME_MIN minutes left\n");
+		"$STATE: $PERCENTAGE%%\n");
 
 	// Replace variable stuff
-	replaceSubString(&output, "$MAX", "REPL_MAX");
-	replaceSubString(&output, "$STATE", "REPL_STATE");
-	replaceSubString(&output, "$PERCENTAGE", "REPL_PERCENTAGE");
-	replaceSubString(&output, "$TIME_MIN", "REPL_TIME_MIN");
+	char placeholder[MAX_INTLEN];
+
+	intToString(placeholder, getBatteryStatus(bat, "max"));
+	replaceSubString(&output, "$MAX", placeholder);
+	intToString(placeholder, getBatteryStatus(bat, "percentage"));
+	replaceSubString(&output, "$PERCENTAGE", placeholder);
+	if (getBatteryStatus(bat, "status") == 0) {
+		replaceSubString(&output, "$STATE", "discharging");
+	}
+	else {
+		replaceSubString(&output, "$STATE", "charging");
+	}
 
 	// Write to stream
 	fprintf(stream, output);
@@ -75,3 +84,11 @@ void printOutput(FILE *stream, battery *bat)
 		}
 	}
 }
+
+void intToString(char *dest, int val)
+{
+	if (dest != NULL) {
+		snprintf(dest, MAX_INTLEN + 1, "%d", val);
+	}
+}
+

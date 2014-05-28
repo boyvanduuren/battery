@@ -17,6 +17,6 @@ typedef struct batteries {
 	int avg;
 } battery;
 
-char *getBatteryStatus(battery *bat, const char *field);
+int getBatteryStatus(battery *bat, const char *field);
 
 #endif
