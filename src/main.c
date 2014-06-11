@@ -3,38 +3,30 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <getopt.h>
+#include <string.h>
 #include "battery.h"
 #include "output.h"
 #include "main.h"
 
 int main(int argc, char *argv[])
 {
+	// Initialize variables
 	bat = malloc(sizeof(battery));
 	bat->max = getValue(BAT_MAX);
 	bat->state = getValue(AC_CHRG);
 	bat->cur = 0;
 	bat->pre = 0;
 	bat->avg = 0;
-
 	int countIter = 0;
+	fdout = stdout;
+	strcat(message, "$STATE: $PERCENTAGE%%\n");
+
+	// Handle options
+	handleOptions(argc, argv);
 
 	// Handle SIGINT, so we can gracefully exit
 	signal(SIGINT, handleSignal);
-
-	// TODO: Improve option handling!
-	if (argc == 3 && argv[1][1] == 'w') {
-		// If -w file is given, open file
-		fdout = fopen(argv[2], "w");
-		if (fdout == NULL) {
-			fprintf(stderr, "Error opening %s: ", argv[2]);
-			perror("");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else {
-		// else, just write to stdout
-		fdout = stdout;
-	}
 
 	while (1) {
 		bat->cur = getValue(BAT_CUR);
@@ -92,8 +84,37 @@ int getValue(const char *filename)
 }
 
 // Handle SIGINT
-void handleSignal() {
+void handleSignal()
+{
 	fclose(fdout);
 	free(bat);
 	exit(EXIT_SUCCESS);
+}
+
+void handleOptions(int argc, char *argv[])
+{
+	int opt = 0, long_index = 0;
+	static struct option long_options[] = {
+		{"write", required_argument, 0, 'w'},
+		{"message", required_argument, 0, 'm'},
+		{0, 0, 0, 0}
+	};
+
+	while ((opt = getopt_long(argc, argv, "w:m:",
+			long_options, &long_index)) != -1) {
+		switch (opt) {
+			case 'w':
+				opmask |= OP_FILE;
+				fdout = fopen(optarg, "w");
+				break;
+			case 'm':
+				opmask |= OP_MESSAGE;
+				strncpy(message, optarg, BUF_SIZE - 2);
+				strcat(message, "\n");
+				break;
+			default:
+				printf("Usage: %s [-w <file>] [-m custom output]\n", argv[0]);
+				exit(EXIT_FAILURE);
+		}
+	}
 }

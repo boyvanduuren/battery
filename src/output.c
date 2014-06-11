@@ -41,8 +41,7 @@ void printOutput(FILE *stream, battery *bat)
 {
 	// Set up initial string
 	char *output = malloc(sizeof(char) * BUF_SIZE);
-	snprintf(output, BUF_SIZE,
-		"$STATE: $PERCENTAGE%%\n");
+	snprintf(output, BUF_SIZE, message);
 
 	// Replace variable stuff
 	char placeholder[MAX_INTLEN];
