@@ -50,7 +50,7 @@ void printOutput(FILE *stream, battery *bat)
 	replaceSubString(&output, "$MAX", placeholder);
 	intToString(placeholder, getBatteryStatus(bat, "percentage"));
 	replaceSubString(&output, "$PERCENTAGE", placeholder);
-	if (getBatteryStatus(bat, "status") == 0) {
+	if (getBatteryStatus(bat, "state") == 0) {
 		replaceSubString(&output, "$STATE", "discharging");
 	}
 	else {
