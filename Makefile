@@ -1,12 +1,20 @@
 CC=gcc
+CFLAGS=-Wall
 LIBS=-lm
-SRC=./src/
-OUT=./bin/
+SOURCEDIR=./src
+HEADERS=$(SOURCEDIR)/main.h $(SOURCEDIR)/battery.h $(SOURCEDIR)/output.h
+SOURCES=$(SOURCEDIR)/main.c $(SOURCEDIR)/battery.c $(SOURCEDIR)/output.c
+OUT=./bin
+BIN=battery
 
-battery: $(SRC)main.c $(SRC)main.h $(SRC)battery.c $(SRC)battery.h $(SRC)output.c $(SRC)output.h
-	test -d $(OUT) || mkdir $(OUT)
-	$(CC) -o $(OUT)battery $(SRC)main.c $(SRC)battery.c $(SRC)output.c $(LIBS)
+$(BIN): $(HEADERS) $(SOURCES) $(OUT)
+	$(CC) $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS)
 
-debug: $(SRC)main.c $(SRC)main.h $(SRC)battery.c $(SRC)battery.h $(SRC)output.c $(SRC)output.h
-	test -d $(OUT) || mkdir $(OUT)
-	$(CC) -g -Wall -o $(OUT)battery $(SRC)main.c $(SRC)battery.c $(SRC)output.c $(LIBS)
+debug: $(HEADERS) $(SOURCES) $(OUT)
+	$(CC) -g $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS)
+
+$(OUT):
+	mkdir $(OUT)
+
+clean:
+	rm -rf $(OUT)
