@@ -226,14 +226,14 @@ void handleOptions(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "w:m:i:a:hv",
+	while ((opt = getopt_long(argc, argv, "w:f:i:a:hv",
 			long_options, &long_index)) != -1) {
 		switch (opt) {
 			case 'w':
 				opmask |= OP_FILE;
 				handleOptionFile(optarg);
 				break;
-			case 'm':
+			case 'f':
 				opmask |= OP_MESSAGE;
 				handleOptionMessage(optarg);
 				break;
