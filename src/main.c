@@ -13,6 +13,9 @@
 
 int main(int argc, char *argv[])
 {
+	// Handle options
+	handleOptions(argc, argv);
+
 	// Initialize variables
 	strncpy(binaryname, argv[0], 256);
 	bat = malloc(sizeof(battery));
@@ -27,9 +30,6 @@ int main(int argc, char *argv[])
 	int iterations;
 	fdout = stdout;
 	strcat(message, "$STATE: $PERCENTAGE%%\n");
-
-	// Handle options
-	handleOptions(argc, argv);
 
 	// Handle SIGINT, so we can gracefully exit
 	signal(SIGINT, handleSignal);
@@ -100,15 +100,17 @@ void printUsage() {
 		"  -w, --write=FILE      write output to file, in stead of STDOUT \n" \
 		"  -f, --format=FORMAT   format the output using keywords. \n" \
 		"                        "  \
-		"  keywords:  $STATE: outputs either  \"charging \" or  \"discharging \" \n" \
+		"  keywords:\n" \
 		"                        "  \
-		"  $PERCENTAGE: outputs the battery charge in percentages \n" \
+		"   $STATE: outputs either  \"charging\" or  \"discharging\" \n" \
 		"                        "  \
-		"  $MIN: shows the battery's minimum charge as an integer (always 0) \n" \
+		"   $PERCENTAGE: outputs the battery charge in percentages \n" \
 		"                        "  \
-		"  $MAX: shows the battery's maximum charge as an integer \n" \
+		"   $MIN: shows the battery's minimum charge as an integer (always 0) \n" \
 		"                        "  \
-		"  $CUR: shows the battery's current charge as an integer \n" \
+		"   $MAX: shows the battery's maximum charge as an integer \n" \
+		"                        "  \
+		"   $CUR: shows the battery's current charge as an integer \n" \
 		"  -i, --interval=NUM    change how often we output the status \n" \
 		"                          the default for this is 5; interval should always \n" \
 		"                          be lower in value than the average \n" \
