@@ -94,22 +94,29 @@ int main(int argc, char *argv[])
 }
 
 void printUsage() {
-	printf("Usage: %s OPTION...\n", binaryname);
-	printf("Print the average in- or decrease of battery charge.\n\n");
-	printf("Mandatory arguments to long options are mandatory for short options too.\n");
-	printf("  -w, --write=FILE      write output to file, in stead of STDOUT\n");
-	printf("  -f, --format=FORMAT   format the output using keywords.\n");
-	printf("                        ");
-	printf("keywords:  $STATE: outputs either \"charging\" or \"discharging\"\n");
-	printf("                                   ");
-	printf("$PERCENTAGE: outputs the battery charge in percentages\n");
-	printf("                                   ");
-	printf("$MIN: shows the battery's minimum charge as an integer (always 0)\n");
-	printf("                                   ");
-	printf("$MAX: shows the battery's maximum charge as an integer\n");
-	printf("                                   ");
-	printf("$CUR: shows the battery's current charge as an integer\n\n");
-	printf("  -h, --help     display this help and exit\n");
+	printf("Usage: %s OPTION...\n" \
+		"Print the average in- or decrease of battery charge. \n \n" \
+		"Mandatory arguments to long options are mandatory for short options too. \n" \
+		"  -w, --write=FILE      write output to file, in stead of STDOUT \n" \
+		"  -f, --format=FORMAT   format the output using keywords. \n" \
+		"                        "  \
+		"  keywords:  $STATE: outputs either  \"charging \" or  \"discharging \" \n" \
+		"                        "  \
+		"  $PERCENTAGE: outputs the battery charge in percentages \n" \
+		"                        "  \
+		"  $MIN: shows the battery's minimum charge as an integer (always 0) \n" \
+		"                        "  \
+		"  $MAX: shows the battery's maximum charge as an integer \n" \
+		"                        "  \
+		"  $CUR: shows the battery's current charge as an integer \n" \
+		"  -i, --interval=NUM    change how often we output the status \n" \
+		"                          the default for this is 5; interval should always \n" \
+		"                          be lower in value than the average \n" \
+		"  -a, --average=NUM     change how long we should wait before calculating \n" \
+		"                          an average change in battery charge; the default \n" \
+		"                          for this is 20; has to be higher in value than interval \n \n" \
+		"  -h, --help     display this help and exit \n" \
+		"  -v, --version  display version information \n", binaryname);
 
 	exit(EXIT_FAILURE);
 }
