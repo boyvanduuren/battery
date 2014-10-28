@@ -208,8 +208,8 @@ void handleOptions(int argc, char *argv[])
 		{"format", required_argument, 0, 'f'},
 		{"interval", required_argument, 0, 'i'},
 		{"average", required_argument, 0, 'a'},
-		{"help", required_argument, 0, 'h'},
-		{"version", required_argument, 0, 'v'},
+		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
 
