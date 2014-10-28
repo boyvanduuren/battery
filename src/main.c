@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <getopt.h>
 #include <string.h>
+#include <ctype.h>
 #include "battery.h"
 #include "output.h"
 #include "main.h"
@@ -12,6 +13,7 @@
 int main(int argc, char *argv[])
 {
 	// Initialize variables
+	strncpy(binaryname, argv[0], 256);
 	bat = malloc(sizeof(battery));
 	bat->max = getValue(BAT_MAX);
 	bat->state = getValue(AC_CHRG);
@@ -60,8 +62,8 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void printUsage(char *binaryName) {
-	printf("Usage: %s OPTION...\n", binaryName);
+void printUsage() {
+	printf("Usage: %s OPTION...\n", binaryname);
 	printf("Print the average in- or decrease of battery charge.\n\n");
 	printf("Mandatory arguments to long options are mandatory for short options too.\n");
 	printf("  -w, --write=FILE      write output to file, in stead of STDOUT\n");
@@ -121,35 +123,83 @@ void handleSignal()
 	exit(EXIT_SUCCESS);
 }
 
+// Open file so we can write to it later
+void handleOptionFile(char *file)
+{
+	fdout = fopen(file, "w");
+}
+
+// Copy custom message for later use
+void handleOptionMessage(char *custommessage)
+{
+	strncpy(message, custommessage, BUF_SIZE - 2);
+	strcat(message, "\n");
+}
+
+// Verify interval, then copy it for later use
+void handleOptionInterval(char *interval)
+{
+	int i;
+	for (i = 0; interval[i] != '\0'; i++) {
+		if (!isdigit(interval[i])) {
+			printf("%s: argument should be numerical\n", binaryname);
+			exit(EXIT_FAILURE);
+		}
+	}
+	intervalOverride = atoi(interval);
+}
+
+// Verify average, then copy it for later use
+void handleOptionAverage(char *average)
+{
+	int i;
+	for (i = 0; average[i] != '\0'; i++) {
+		if (!isdigit(average[i])) {
+			printf("%s: argument should be numerical\n", binaryname);
+			exit(EXIT_FAILURE);
+		}
+	}
+	averageOverride = atoi(average);
+}
+
 void handleOptions(int argc, char *argv[])
 {
 	int opt = 0, long_index = 0;
 	static struct option long_options[] = {
 		{"write", required_argument, 0, 'w'},
 		{"format", required_argument, 0, 'f'},
+		{"interval", required_argument, 0, 'i'},
+		{"average", required_argument, 0, 'a'},
 		{"help", required_argument, 0, 'h'},
 		{"version", required_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "w:m:hv",
+	while ((opt = getopt_long(argc, argv, "w:m:i:a:hv",
 			long_options, &long_index)) != -1) {
 		switch (opt) {
 			case 'w':
 				opmask |= OP_FILE;
-				fdout = fopen(optarg, "w");
+				handleOptionFile(optarg);
 				break;
 			case 'm':
 				opmask |= OP_MESSAGE;
-				strncpy(message, optarg, BUF_SIZE - 2);
-				strcat(message, "\n");
+				handleOptionMessage(optarg);
+				break;
+			case 'i':
+				opmask |= OP_INTERVAL;
+				handleOptionInterval(optarg);
+				break;
+			case 'a':
+				opmask |= OP_AVERAGE;
+				handleOptionAverage(optarg);
 				break;
 			case 'h':
 				printUsage(argv[0]);
 			case 'v':
 				printVersion();
 			default:
-				printUsage(argv[0]);
+				printUsage();
 		}
 	}
 }
