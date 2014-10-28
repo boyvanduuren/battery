@@ -7,7 +7,7 @@ SOURCES=$(SOURCEDIR)/main.c $(SOURCEDIR)/battery.c $(SOURCEDIR)/output.c
 OUT=./bin
 BIN=battery
 MAJOR=0
-MINOR=1
+MINOR=2
 PATCH=1
 
 $(BIN): $(HEADERS) $(SOURCES) $(OUT)
