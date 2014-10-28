@@ -165,12 +165,6 @@ void handleSignal()
 	exit(EXIT_SUCCESS);
 }
 
-// Open file so we can write to it later
-void handleOptionFile(char *file)
-{
-	fdout = fopen(file, "w");
-}
-
 // Method to check if a particular option was used
 int isOptionSet(int option)
 {
@@ -182,6 +176,13 @@ int isOptionSet(int option)
 		return 0;
 	}
 }
+
+// Open file so we can write to it later
+void handleOptionFile(char *file)
+{
+	fdout = fopen(file, "w");
+}
+
 // Copy custom message for later use
 void handleOptionMessage(char *custommessage)
 {
