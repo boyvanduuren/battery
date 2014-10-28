@@ -81,6 +81,15 @@ void printUsage(char *binaryName) {
 	exit(EXIT_FAILURE);
 }
 
+void printVersion() {
+	printf("battery %d.%d.%d\n", MAJOR, MINOR, PATCH);
+	printf("Copyright (c) 2014 B.C. van Duuren\n");
+	printf("License MIT: http://opensource.org/licenses/MIT\n\n");
+	printf("Written by B.C. van Duuren\n");
+
+	exit(EXIT_SUCCESS);
+}
+
 // Read file content
 int getValue(const char *filename)
 {
@@ -123,7 +132,7 @@ void handleOptions(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "w:m:h",
+	while ((opt = getopt_long(argc, argv, "w:m:hv",
 			long_options, &long_index)) != -1) {
 		switch (opt) {
 			case 'w':
@@ -137,6 +146,8 @@ void handleOptions(int argc, char *argv[])
 				break;
 			case 'h':
 				printUsage(argv[0]);
+			case 'v':
+				printVersion();
 			default:
 				printUsage(argv[0]);
 		}

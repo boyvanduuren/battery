@@ -6,12 +6,17 @@ HEADERS=$(SOURCEDIR)/main.h $(SOURCEDIR)/battery.h $(SOURCEDIR)/output.h
 SOURCES=$(SOURCEDIR)/main.c $(SOURCEDIR)/battery.c $(SOURCEDIR)/output.c
 OUT=./bin
 BIN=battery
+MAJOR=0
+MINOR=1
+PATCH=1
 
 $(BIN): $(HEADERS) $(SOURCES) $(OUT)
-	$(CC) $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS)
+	$(CC) $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS) -DMAJOR=$(MAJOR) \
+		-DMINOR=$(MINOR) -DPATCH=$(PATCH)
 
 debug: $(HEADERS) $(SOURCES) $(OUT)
-	$(CC) -g $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS)
+	$(CC) -g $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS) -DMAJOR=$(MAJOR) \
+		-DMINOR=$(MINOR) -DPATCH=$(PATCH)
 
 $(OUT):
 	mkdir $(OUT)
