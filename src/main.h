@@ -2,6 +2,8 @@
 
 #define MAIN_H
 
+#include <limits.h>
+
 #define BUF_SIZE 100
 #define CHAR_ESC '\\'
 #define CHAR_VAR '$'
@@ -9,7 +11,7 @@
 FILE *fdout;
 battery *bat;
 char message[BUF_SIZE];
-char binaryname [256];
+char binaryname[PATH_MAX];
 unsigned int intervalOverride;
 unsigned int averageOverride;
 
