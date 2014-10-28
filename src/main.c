@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
 	bat->pre = 0;
 	bat->avg = 0;
 	int countIter = 0;
+	int interval;
+	int average;
+	int iterations;
 	fdout = stdout;
 	strcat(message, "$STATE: $PERCENTAGE%%\n");
 
@@ -30,7 +33,35 @@ int main(int argc, char *argv[])
 	// Handle SIGINT, so we can gracefully exit
 	signal(SIGINT, handleSignal);
 
+	// We need to check if the user has given either
+	// option -i or -a to override the interval or average
+	// if so, we need use their values in stead
+	// TODO: create method to check if a certain option is used
+	if (((opmask >> 2) & 1) == 1) {
+		interval = intervalOverride;
+	}
+	else {
+		interval = POLL_INT;
+	}
+	if (((opmask >> 3) & 1) == 1) {
+		average = averageOverride;
+	}
+	else {
+		average = POLL_AVG;
+	}
+	// Average should always be equal to, or higher than interval
+	if (average >= interval) {
+		iterations = average/interval;
+	}
+	else {
+		printf("%s: average needs to be higher than, " \
+			"or equal to interval\n", binaryname);
+		printf("Try '%s --help' for more information\n", binaryname);
+		exit(EXIT_FAILURE);
+	}
+
 	while (1) {
+		// Get our first battery value
 		bat->cur = getValue(BAT_CUR);
 
 		// On the first iteration, or after a
@@ -42,8 +73,8 @@ int main(int argc, char *argv[])
 		// Calculate average increase/decrease
 		// of battery when defined iterations
 		// are done
-		else if (countIter % POLL_ITR == 0) {
-			bat->avg = (bat->pre - bat->cur) / POLL_AVG;
+		else if (countIter % iterations == 0) {
+			bat->avg = (bat->pre - bat->cur) / average;
 			bat->pre = bat->cur;
 		}
 		// If bat->state changed between discharging and charging
@@ -55,7 +86,7 @@ int main(int argc, char *argv[])
 		bat->state = getValue(AC_CHRG);
 
 		printOutput(fdout, bat);
-		sleep(POLL_INT);
+		sleep(interval);
 		countIter++;
 	}
 
