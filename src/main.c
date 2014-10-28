@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <getopt.h>
 #include <string.h>
+#include <math.h>
 #include <ctype.h>
 #include "battery.h"
 #include "output.h"
@@ -36,14 +37,13 @@ int main(int argc, char *argv[])
 	// We need to check if the user has given either
 	// option -i or -a to override the interval or average
 	// if so, we need use their values in stead
-	// TODO: create method to check if a certain option is used
-	if (((opmask >> 2) & 1) == 1) {
+	if (isOptionSet(OP_INTERVAL)) {
 		interval = intervalOverride;
 	}
 	else {
 		interval = POLL_INT;
 	}
-	if (((opmask >> 3) & 1) == 1) {
+	if (isOptionSet(OP_AVERAGE)) {
 		average = averageOverride;
 	}
 	else {
@@ -167,6 +167,17 @@ void handleOptionFile(char *file)
 	fdout = fopen(file, "w");
 }
 
+// Method to check if a particular option was used
+int isOptionSet(int option)
+{
+	option = (int)log2(option);
+	if (((opmask >> option) & 1) == 1) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
 // Copy custom message for later use
 void handleOptionMessage(char *custommessage)
 {

@@ -8,6 +8,13 @@
 #define CHAR_ESC '\\'
 #define CHAR_VAR '$'
 
+typedef enum __operation_t {
+	OP_MESSAGE = 1,
+	OP_FILE = (1 << 1),
+	OP_INTERVAL = (1 << 2),
+	OP_AVERAGE = (1 << 3)
+} operation_t;
+
 FILE *fdout;
 battery *bat;
 char message[BUF_SIZE];
@@ -16,15 +23,9 @@ unsigned int intervalOverride;
 unsigned int averageOverride;
 
 int getValue(const char *filename);
+int isOptionSet(int option);
 void handleSignal();
 void handleOptions(int argc, char *argv[]);
-
-typedef enum __operation_t {
-	OP_MESSAGE = 1,
-	OP_FILE = (1 << 1),
-	OP_INTERVAL = (1 << 2),
-	OP_AVERAGE = (1 << 3)
-} operation_t;
 
 operation_t opmask;
 
