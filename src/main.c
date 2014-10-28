@@ -29,7 +29,9 @@ int main(int argc, char *argv[])
 	int average;
 	int iterations;
 	fdout = stdout;
-	strcat(message, "$STATE: $PERCENTAGE%%\n");
+	if (!isOptionSet(OP_MESSAGE)) {
+		strcat(message, "$STATE: $PERCENTAGE%%\n");
+	}
 
 	// Handle SIGINT, so we can gracefully exit
 	signal(SIGINT, handleSignal);
