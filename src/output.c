@@ -46,10 +46,20 @@ void printOutput(FILE *stream, battery *bat)
 	// Replace variable stuff
 	char placeholder[MAX_INTLEN];
 
+	// Replace various keywords in our output
+	// $MIN -> 0
+	intToString(placeholder, 0);
+	replaceSubString(&output, "$MIN", placeholder);
+	// $MAX -> maximum battery capacity
 	intToString(placeholder, getBatteryStatus(bat, "max"));
 	replaceSubString(&output, "$MAX", placeholder);
+	// $CUR -> current battery capaticy
+	intToString(placeholder, getBatteryStatus(bat, "current"));
+	replaceSubString(&output, "$CUR", placeholder);
+	// $PERCENTAGE -> current charge in percentage
 	intToString(placeholder, getBatteryStatus(bat, "percentage"));
 	replaceSubString(&output, "$PERCENTAGE", placeholder);
+	// $STATE -> charging or discharging
 	if (getBatteryStatus(bat, "state") == 0) {
 		replaceSubString(&output, "$STATE", "discharging");
 	}
