@@ -8,7 +8,7 @@ OUT=./bin
 BIN=battery
 MAJOR=0
 MINOR=2
-PATCH=1
+PATCH=2
 
 $(BIN): $(HEADERS) $(SOURCES) $(OUT)
 	$(CC) $(CFLAGS) -o $(OUT)/$(BIN) $(SOURCES) $(LIBS) -DMAJOR=$(MAJOR) \
