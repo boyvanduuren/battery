@@ -6,6 +6,7 @@ Wrote this because I was using the `acpi` tool to show battery status in my stat
 
 Build with the following commands
 
+    autoreconf --install
     ./configure
     make
     make install
