@@ -10,6 +10,7 @@
 #include "battery.h"
 #include "output.h"
 #include "main.h"
+#include "config.h"
 
 int main(int argc, char *argv[])
 {
@@ -126,7 +127,7 @@ void printUsage() {
 }
 
 void printVersion() {
-	printf("battery %d.%d.%d\n", MAJOR, MINOR, PATCH);
+	printf("%s\n", PACKAGE_STRING);
 	printf("Copyright (c) 2014 B.C. van Duuren\n");
 	printf("License MIT: http://opensource.org/licenses/MIT\n\n");
 	printf("Written by B.C. van Duuren\n");
