@@ -18,9 +18,12 @@ int main(int argc, char *argv[])
 	handleOptions(argc, argv);
 
 	// Initialize variables
+	bat_max = malloc(sizeof(char) * BUF_SIZE);
+	bat_cur = malloc(sizeof(char) * BUF_SIZE);
+	snprintf(bat_max, BUF_SIZE, "%s_full", findBattery());
 	strncpy(binaryname, argv[0], 256);
 	bat = malloc(sizeof(battery));
-	bat->max = getValue(BAT_MAX);
+	bat->max = getValue(bat_max);
 	bat->state = getValue(AC_CHRG);
 	bat->cur = 0;
 	bat->pre = 0;
@@ -65,7 +68,8 @@ int main(int argc, char *argv[])
 
 	while (1) {
 		// Get our first battery value
-		bat->cur = getValue(BAT_CUR);
+		snprintf(bat_cur, BUF_SIZE, "%s_now", findBattery());
+		bat->cur = getValue(bat_cur);
 
 		// On the first iteration, or after a
 		// battery change, set bat->pre to the
@@ -135,6 +139,19 @@ void printVersion() {
 	exit(EXIT_SUCCESS);
 }
 
+const char *findBattery()
+{
+	if (access("/sys/class/power_supply/BAT0/charge_now", F_OK) != -1) {
+		return "/sys/class/power_supply/BAT0/charge";
+	}
+	else if (access("/sys/class/power_supply/BAT0/energy_now", F_OK) != -1) {
+		return "/sys/class/power_supply/BAT0/energy";
+	}
+	else {
+		return NULL;
+	}
+}
+
 // Read file content
 int getValue(const char *filename)
 {
@@ -161,6 +178,8 @@ int getValue(const char *filename)
 // Handle SIGINT
 void handleSignal()
 {
+	free(bat_max);
+	free(bat_cur);
 	fclose(fdout);
 	free(bat);
 	exit(EXIT_SUCCESS);

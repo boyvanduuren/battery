@@ -15,6 +15,8 @@ typedef enum __operation_t {
 	OP_AVERAGE = (1 << 3)
 } operation_t;
 
+char *bat_max;
+char *bat_cur;
 FILE *fdout;
 battery *bat;
 char message[BUF_SIZE];
@@ -22,6 +24,7 @@ char binaryname[PATH_MAX];
 unsigned int intervalOverride;
 unsigned int averageOverride;
 
+const char *findBattery();
 int getValue(const char *filename);
 int isOptionSet(int option);
 void handleSignal();
